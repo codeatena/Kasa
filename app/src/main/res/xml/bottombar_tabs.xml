@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_devices"
+        icon="@drawable/ic_device_enable_icon"
+        title="Devices" />
+    <tab
+        id="@+id/tab_scenes"
+        icon="@drawable/ic_scene_enable_icon"
+        title="Scenes" />
+    <tab
+        id="@+id/tab_actions"
+        icon="@drawable/ic_action_enable_icon"
+        title="Actions" />
+</tabs>
