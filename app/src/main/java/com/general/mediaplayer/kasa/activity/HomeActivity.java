@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
-public class HomeActivity extends UsbSerialActivity {
+public class HomeActivity extends BaseActivity {
 
     @BindView(R.id.bottomBar)
     BottomBar bottomBar;
@@ -177,10 +177,10 @@ public class HomeActivity extends UsbSerialActivity {
             @Override
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
-                if (position == 0)
-                    sendCommand("LB130\n");
-                else
-                    sendCommand("LB110\n");
+//                if (position == 0)
+//                    sendCommand("LB130\n");
+//                else
+//                    sendCommand("LB110\n");
 
             }
 
@@ -205,7 +205,7 @@ public class HomeActivity extends UsbSerialActivity {
             @Override
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
-                sendCommand("HS105\n");
+                //sendCommand("HS105\n");
             }
 
             @Override
@@ -221,7 +221,7 @@ public class HomeActivity extends UsbSerialActivity {
             @Override
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
-                sendCommand("HS200\n");
+                //sendCommand("HS200\n");
 
             }
 
