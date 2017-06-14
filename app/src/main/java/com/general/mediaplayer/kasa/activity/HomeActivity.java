@@ -69,10 +69,6 @@ public class HomeActivity extends BaseActivity {
 
         public HomeAdapterListener onClickListener;
 
-        public HomeSection() {
-            // call constructor with layout resources for this Section header and items
-            super(R.layout.section_header_home, R.layout.section_item_home);
-        }
 
         public HomeSection(String title, List<String> list , List<Integer> imgList ,HomeAdapterListener listender) {
             super(R.layout.section_header_home, R.layout.section_item_home);
@@ -109,6 +105,12 @@ public class HomeActivity extends BaseActivity {
                     onClickListener.itemViewOnClick(itemHolder ,position);
                 }
             });
+
+            if (position == 1)
+            {
+                itemHolder.powerButton.setDrawableOff(ContextCompat.getDrawable(HomeActivity.this, R.drawable.power_enable_icon));
+                itemHolder.powerButton.setDrawableOn(ContextCompat.getDrawable(HomeActivity.this, R.drawable.power_disable_icon));
+            }
 
             itemHolder.powerButton.setOnClickListener(new View.OnClickListener() {
                 @Override

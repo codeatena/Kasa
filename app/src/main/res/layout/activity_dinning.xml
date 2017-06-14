@@ -59,8 +59,8 @@
         android:scaleType="fitXY"
         tib:layout_constraintRight_toRightOf="parent"
         tib:layout_constraintTop_toBottomOf="@+id/textView2"
-        tib:tib_drawable_off="@drawable/power_disable_icon"
-        tib:tib_drawable_on="@drawable/power_enable_icon"
+        tib:tib_drawable_off="@drawable/power_enable_icon"
+        tib:tib_drawable_on="@drawable/power_disable_icon"
         android:onClick="onPower"/>
 
     <LinearLayout
@@ -132,7 +132,6 @@
                 android:background="@drawable/usage_icon"
                 android:onClick="onUsage"/>
         </LinearLayout>
-
 
     </LinearLayout>
 
