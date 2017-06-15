@@ -54,7 +54,7 @@ public class BedroomActivity extends UsbSerialActivity {
 
     public void onPower(View view)
     {
-        stopFlash(powerBtn ,R.drawable.power_disable_icon);
+        stopFlash(powerBtn ,R.drawable.power_enable_icon);
 
         sendCommand("LB130\n");
     }

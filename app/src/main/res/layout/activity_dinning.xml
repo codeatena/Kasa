@@ -91,7 +91,8 @@
             app:left_thumb_image="@drawable/ic_seek_icon"
             app:corner_radius="10"
             app:bar_color="#ababab"
-            app:bar_highlight_color="#606060"/>
+            app:bar_highlight_color="#606060"
+            app:min_start_value = "50"/>
     </LinearLayout>
 
     <LinearLayout

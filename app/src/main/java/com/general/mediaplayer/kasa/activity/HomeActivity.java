@@ -65,7 +65,6 @@ public class HomeActivity extends BaseActivity {
 
         public HomeAdapterListener onClickListener;
 
-
         public HomeSection(String title, List<String> list , List<Integer> imgList ,HomeAdapterListener listender) {
             super(R.layout.section_header_home, R.layout.section_item_home);
 
@@ -180,9 +179,9 @@ public class HomeActivity extends BaseActivity {
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 if (position == 0)
-                    stopAnimation(v ,R.drawable.power_disable_icon);
-                else
                     stopAnimation(v ,R.drawable.power_enable_icon);
+                else
+                    stopAnimation(v ,R.drawable.power_disable_icon);
 
 //                if (position == 0)
 //                    sendCommand("LB130\n");
@@ -212,7 +211,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
-                stopAnimation(v ,R.drawable.power_disable_icon);
+                stopAnimation(v ,R.drawable.power_enable_icon);
                 //sendCommand("HS105\n");
             }
 
@@ -229,7 +228,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
-                stopAnimation(v ,R.drawable.power_disable_icon);
+                stopAnimation(v ,R.drawable.power_enable_icon);
                 //sendCommand("HS200\n");
 
             }

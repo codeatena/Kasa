@@ -49,7 +49,7 @@ public class FanActivity extends UsbSerialActivity {
 
     public void onPower(View view)
     {
-        stopFlash(powerBtn ,R.drawable.power_disable_icon);
+        stopFlash(powerBtn ,R.drawable.power_enable_icon);
 
         sendCommand("HS105\n");
 
