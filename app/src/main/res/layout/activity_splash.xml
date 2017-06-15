@@ -20,4 +20,5 @@
         app:srcCompat="@drawable/splash"
         android:layout_marginLeft="0dp"
         app:layout_constraintLeft_toLeftOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

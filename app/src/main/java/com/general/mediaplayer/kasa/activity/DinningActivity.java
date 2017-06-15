@@ -6,12 +6,22 @@ import android.view.View;
 import com.general.mediaplayer.kasa.R;
 import com.general.mediaplayer.kasa.utility.AlertUtility;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import pl.droidsonroids.gif.GifImageButton;
+
 public class DinningActivity extends UsbSerialActivity {
+
+    @BindView(R.id.power_imgbutton)
+    GifImageButton powerBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dinning);
+
+        ButterKnife.bind(this);
+
     }
 
     public void onBack(View view)
@@ -33,6 +43,8 @@ public class DinningActivity extends UsbSerialActivity {
 
     public void onPower(View view)
     {
+        stopFlash(powerBtn ,R.drawable.power_enable_icon);
+
         sendCommand("LB110\n");
 
     }

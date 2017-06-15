@@ -36,8 +36,7 @@
         android:textColor="@color/colorWeak"
         android:textSize="@dimen/fontSmall"/>
 
-    <net.colindodd.toggleimagebutton.ToggleImageButton
-        xmlns:tib="http://schemas.android.com/apk/res-auto"
+    <pl.droidsonroids.gif.GifImageButton
         android:id="@+id/power_imgbutton"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -45,7 +44,6 @@
         android:layout_centerVertical="true"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
-        tib:tib_drawable_on="@drawable/power_enable_icon"
-        tib:tib_drawable_off="@drawable/power_disable_icon"
+        android:src="@drawable/white_flash"
          />
 </RelativeLayout>

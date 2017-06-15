@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageButton;
+
 public class BaseActivity extends AppCompatActivity {
 
     public static int FILTER_RESET_DELAY = 1000 * 2 * 60;
@@ -31,7 +34,7 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = new Intent(BaseActivity.this, LoopingActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         };
@@ -67,4 +70,13 @@ public class BaseActivity extends AppCompatActivity {
         super.finish();
     }
 
+    public void stopFlash(GifImageButton gifImageButton , int resId)
+    {
+        if (gifImageButton.getDrawable() instanceof GifDrawable)
+        {
+            GifDrawable gifDrawable = (GifDrawable)gifImageButton.getDrawable();
+            gifDrawable.stop();
+            gifImageButton.setImageResource(resId);
+        }
+    }
 }

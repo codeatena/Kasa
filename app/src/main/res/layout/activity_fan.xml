@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.general.mediaplayer.kasa.activity.FanActivity"
-    android:background="@color/colorBackground">
+    android:background="@android:color/white">
 
     <include
         layout="@layout/toolbar_back"
@@ -46,7 +46,7 @@
         app:layout_constraintVertical_bias="0.024" />
 
 
-    <net.colindodd.toggleimagebutton.ToggleImageButton xmlns:tib="http://schemas.android.com/apk/res-auto"
+    <pl.droidsonroids.gif.GifImageButton xmlns:tib="http://schemas.android.com/apk/res-auto"
         android:id="@+id/power_imgbutton"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -59,8 +59,7 @@
         android:scaleType="fitXY"
         tib:layout_constraintRight_toRightOf="parent"
         tib:layout_constraintTop_toBottomOf="@+id/textView2"
-        tib:tib_drawable_off="@drawable/power_disable_icon"
-        tib:tib_drawable_on="@drawable/power_enable_icon"
+        android:src="@drawable/white_flash"
         android:onClick="onPower"/>
 
     <TextView

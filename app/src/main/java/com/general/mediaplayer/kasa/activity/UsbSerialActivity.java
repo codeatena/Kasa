@@ -135,4 +135,5 @@ public class UsbSerialActivity extends BaseActivity {
             mSerialIoManager.writeAsync(response);
         }
     }
+
 }

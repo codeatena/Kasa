@@ -2,7 +2,6 @@ package com.general.mediaplayer.kasa.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.general.mediaplayer.kasa.R;
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
-
-import net.colindodd.toggleimagebutton.ToggleImageButton;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,11 +19,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+import pl.droidsonroids.gif.GifImageButton;
 
 public class HomeActivity extends BaseActivity {
 
-    @BindView(R.id.bottomBar)
-    BottomBar bottomBar;
+//    @BindView(R.id.bottomBar)
+//    BottomBar bottomBar;
 
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
@@ -43,19 +39,19 @@ public class HomeActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
-        bottomBar.getTabWithId(R.id.tab_devices).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
-        bottomBar.getTabWithId(R.id.tab_scenes).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
-        bottomBar.getTabWithId(R.id.tab_actions).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
-        bottomBar.getTabWithId(R.id.tab_devices).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
-        bottomBar.getTabWithId(R.id.tab_scenes).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
-        bottomBar.getTabWithId(R.id.tab_actions).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
-
-        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-
-            }
-        });
+//        bottomBar.getTabWithId(R.id.tab_devices).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
+//        bottomBar.getTabWithId(R.id.tab_scenes).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
+//        bottomBar.getTabWithId(R.id.tab_actions).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
+//        bottomBar.getTabWithId(R.id.tab_devices).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
+//        bottomBar.getTabWithId(R.id.tab_scenes).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
+//        bottomBar.getTabWithId(R.id.tab_actions).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
+//
+//        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+//            @Override
+//            public void onTabSelected(@IdRes int tabId) {
+//
+//            }
+//        });
 
         setAdaptor();
 
@@ -108,8 +104,7 @@ public class HomeActivity extends BaseActivity {
 
             if (position == 1)
             {
-                itemHolder.powerButton.setDrawableOff(ContextCompat.getDrawable(HomeActivity.this, R.drawable.power_enable_icon));
-                itemHolder.powerButton.setDrawableOn(ContextCompat.getDrawable(HomeActivity.this, R.drawable.power_disable_icon));
+                itemHolder.powerButton.setImageResource(R.drawable.green_flash);
             }
 
             itemHolder.powerButton.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +142,7 @@ public class HomeActivity extends BaseActivity {
         TextView titleText;
         TextView percentText;
         ImageView leftImageView;
-        ToggleImageButton powerButton;
+        GifImageButton powerButton;
         RelativeLayout rootView;
 
         public HomeItemViewHolder(View itemView) {
@@ -157,7 +152,7 @@ public class HomeActivity extends BaseActivity {
             titleText = (TextView) itemView.findViewById(R.id.title_text);
             percentText = (TextView) itemView.findViewById(R.id.percent_text);
             leftImageView = (ImageView) itemView.findViewById(R.id.left_imageview);
-            powerButton = (ToggleImageButton)itemView.findViewById(R.id.power_imgbutton);
+            powerButton = (GifImageButton)itemView.findViewById(R.id.power_imgbutton);
         }
     }
 
@@ -172,12 +167,22 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
+    void stopAnimation(RecyclerView.ViewHolder v ,int resId)
+    {
+        stopFlash(((HomeItemViewHolder)v).powerButton ,resId);
+    }
+
     private void setAdaptor()
     {
         HomeAdapterListener myAdapterListener1 = new HomeAdapterListener() {
 
             @Override
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
+
+                if (position == 0)
+                    stopAnimation(v ,R.drawable.power_disable_icon);
+                else
+                    stopAnimation(v ,R.drawable.power_enable_icon);
 
 //                if (position == 0)
 //                    sendCommand("LB130\n");
@@ -207,6 +212,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
+                stopAnimation(v ,R.drawable.power_disable_icon);
                 //sendCommand("HS105\n");
             }
 
@@ -223,6 +229,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
+                stopAnimation(v ,R.drawable.power_disable_icon);
                 //sendCommand("HS200\n");
 
             }
