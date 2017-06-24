@@ -77,8 +77,22 @@ public class UsbSerialActivity extends BaseActivity {
                 sPort.open(connection);
                 sPort.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
 
-            } catch (IOException e) {
+                Log.v("CD  - Carrier Detect", String.valueOf(sPort.getCD()));
+                Log.v("CTS - Clear To Send", String.valueOf(sPort.getCTS()));
+                Log.v("DSR - Data Set Ready", String.valueOf(sPort.getDSR()));
+                Log.v("DTR - ", String.valueOf(sPort.getDSR()));
+                Log.v("RI  - Ring Indicator", String.valueOf(sPort.getRI()));
+                Log.v("RTS - Request To Send", String.valueOf(sPort.getRTS()));
 
+            } catch (IOException e) {
+                Log.e(TAG, "Error setting up device: " + e.getMessage(), e);
+                try {
+                    sPort.close();
+                } catch (IOException e2) {
+                    // Ignore.
+                }
+                sPort = null;
+                return;
             }
         }
 
