@@ -49,6 +49,7 @@ public class UsbSerialActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
         if (availableDrivers.isEmpty()) {
@@ -74,9 +75,7 @@ public class UsbSerialActivity extends BaseActivity {
 
             try {
                 sPort.open(connection);
-                sPort.setDTR(true);
-                sPort.setRTS(true);
-                sPort.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+                sPort.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
 
             } catch (IOException e) {
 
