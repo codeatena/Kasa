@@ -21,7 +21,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import pl.droidsonroids.gif.GifImageButton;
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends UsbSerialActivity {
 
 //    @BindView(R.id.bottomBar)
 //    BottomBar bottomBar;
@@ -183,10 +183,10 @@ public class HomeActivity extends BaseActivity {
                 else
                     stopAnimation(v ,R.drawable.power_disable_icon);
 
-//                if (position == 0)
-//                    sendCommand("LB130\n");
-//                else
-//                    sendCommand("LB110\n");
+                if (position == 0)
+                    sendCommand("LB130\n");
+                else
+                    sendCommand("LB110\n");
 
             }
 
@@ -212,7 +212,7 @@ public class HomeActivity extends BaseActivity {
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 stopAnimation(v ,R.drawable.power_enable_icon);
-                //sendCommand("HS105\n");
+                sendCommand("HS105\n");
             }
 
             @Override
@@ -229,7 +229,7 @@ public class HomeActivity extends BaseActivity {
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 stopAnimation(v ,R.drawable.power_enable_icon);
-                //sendCommand("HS200\n");
+                sendCommand("HS200\n");
 
             }
 

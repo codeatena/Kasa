@@ -79,12 +79,7 @@ public class UsbSerialActivity extends BaseActivity {
                 sPort.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
 
             } catch (IOException e) {
-                try {
-                    sPort.close();
-                } catch (IOException e2) {
-                    // Ignore.
-                }
-                sPort = null;
+
             }
         }
 
