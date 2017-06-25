@@ -1,6 +1,10 @@
 package com.general.mediaplayer.kasa.activity;
 
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
@@ -19,6 +23,7 @@ import java.util.concurrent.Executors;
 public class UsbSerialActivity extends BaseActivity {
 
     private final String TAG = UsbSerialActivity.class.getSimpleName();
+    private static final String ACTION_USB_PERMISSION = "com.examples.accessory.controller.action.USB_PERMISSION";
 
     UsbSerialPort sPort;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
@@ -70,34 +75,18 @@ public class UsbSerialActivity extends BaseActivity {
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
             UsbDeviceConnection connection = usbManager.openDevice(sPort.getDriver().getDevice());
             if (connection == null) {
+
+                PendingIntent mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+                registerReceiver(mUsbReceiver, filter);
+                usbManager.requestPermission(sPort.getDriver().getDevice(), mPermissionIntent);
+
                 return;
             }
 
-            try {
-                sPort.open(connection);
-                sPort.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
-
-                Log.v("CD  - Carrier Detect", String.valueOf(sPort.getCD()));
-                Log.v("CTS - Clear To Send", String.valueOf(sPort.getCTS()));
-                Log.v("DSR - Data Set Ready", String.valueOf(sPort.getDSR()));
-                Log.v("DTR - ", String.valueOf(sPort.getDSR()));
-                Log.v("RI  - Ring Indicator", String.valueOf(sPort.getRI()));
-                Log.v("RTS - Request To Send", String.valueOf(sPort.getRTS()));
-
-            } catch (IOException e) {
-                Log.e(TAG, "Error setting up device: " + e.getMessage(), e);
-                try {
-                    sPort.close();
-                } catch (IOException e2) {
-                    // Ignore.
-                }
-                sPort = null;
-                return;
-            }
+            openConnection(connection);
+            onDeviceStateChange();
         }
-
-        onDeviceStateChange();
-
     }
 
     @Override
@@ -135,13 +124,47 @@ public class UsbSerialActivity extends BaseActivity {
         startIoManager();
     }
 
+    private void openConnection(UsbDeviceConnection connection)
+    {
+        try {
+            sPort.open(connection);
+            sPort.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+
+        } catch (IOException e) {
+            Log.e(TAG, "Error setting up device: " + e.getMessage(), e);
+            try {
+                sPort.close();
+            } catch (IOException e2) {
+                // Ignore.
+            }
+            sPort = null;
+            return;
+        }
+    }
+
     public void sendCommand(String str) {
 
-        if (mSerialIoManager != null)
-        {
+        if (mSerialIoManager != null) {
             byte response[] = str.getBytes();
             mSerialIoManager.writeAsync(response);
         }
     }
+
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
+
+                    final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+                    UsbDeviceConnection connection = usbManager.openDevice(sPort.getDriver().getDevice());
+                    openConnection(connection);
+                }
+            }
+
+        }
+    };
 
 }
