@@ -43,4 +43,6 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
+
+    compile 'org.greenrobot:eventbus:3.0.0'
 }

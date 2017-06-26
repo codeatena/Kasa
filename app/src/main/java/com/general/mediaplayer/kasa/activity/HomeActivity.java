@@ -5,12 +5,18 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.general.mediaplayer.kasa.R;
+import com.general.mediaplayer.kasa.model.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,23 +44,18 @@ public class HomeActivity extends UsbSerialActivity {
         setContentView(R.layout.activity_home);
 
         ButterKnife.bind(this);
-
-//        bottomBar.getTabWithId(R.id.tab_devices).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
-//        bottomBar.getTabWithId(R.id.tab_scenes).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
-//        bottomBar.getTabWithId(R.id.tab_actions).findViewById(R.id.bb_bottom_bar_icon).setScaleX(1.5f);
-//        bottomBar.getTabWithId(R.id.tab_devices).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
-//        bottomBar.getTabWithId(R.id.tab_scenes).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
-//        bottomBar.getTabWithId(R.id.tab_actions).findViewById(R.id.bb_bottom_bar_icon).setScaleY(1.5f);
-//
-//        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-//            @Override
-//            public void onTabSelected(@IdRes int tabId) {
-//
-//            }
-//        });
-
         setAdaptor();
 
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event)
+    {
+        /* Do something */
+        Log.d("command" ,event.command);
+        sendCommand(event.command);
     }
 
     private class HomeSection extends StatelessSection {
@@ -184,9 +185,9 @@ public class HomeActivity extends UsbSerialActivity {
                     stopAnimation(v ,R.drawable.power_disable_icon);
 
                 if (position == 0)
-                    sendCommand("LB130\n");
+                    sendCommand("1");
                 else
-                    sendCommand("LB110\n");
+                    sendCommand("2");
 
             }
 
@@ -212,7 +213,7 @@ public class HomeActivity extends UsbSerialActivity {
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 stopAnimation(v ,R.drawable.power_enable_icon);
-                sendCommand("HS105\n");
+                sendCommand("3");
             }
 
             @Override
@@ -229,7 +230,7 @@ public class HomeActivity extends UsbSerialActivity {
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 stopAnimation(v ,R.drawable.power_enable_icon);
-                sendCommand("HS200\n");
+                sendCommand("4");
 
             }
 

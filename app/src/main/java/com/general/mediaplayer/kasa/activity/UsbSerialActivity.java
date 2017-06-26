@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
@@ -14,12 +13,9 @@ import android.util.Log;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
-import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class UsbSerialActivity extends BaseActivity {
 
@@ -27,22 +23,10 @@ public class UsbSerialActivity extends BaseActivity {
     private static final String ACTION_USB_PERMISSION = "com.examples.accessory.controller.action.USB_PERMISSION";
 
     UsbSerialPort sPort;
-    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
-    private SerialInputOutputManager mSerialIoManager;
+    UsbDeviceConnection connection;
 
-    public final SerialInputOutputManager.Listener mListener =
-            new SerialInputOutputManager.Listener() {
+    private boolean isAsked = false;
 
-                @Override
-                public void onRunError(Exception e) {
-                    Log.d(TAG, "Runner stopped.");
-                }
-
-                @Override
-                public void onNewData(final byte[] data) {
-                    Log.v(TAG, data.toString());
-                }
-            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +52,24 @@ public class UsbSerialActivity extends BaseActivity {
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
             if (usbManager.hasPermission(sPort.getDriver().getDevice())){
 
-                UsbDeviceConnection connection = usbManager.openDevice(sPort.getDriver().getDevice());
-                openConnection(connection);
-                onDeviceStateChange();
+                if (connection == null)
+                {
+                    connection = usbManager.openDevice(sPort.getDriver().getDevice());
+                    openConnection(connection);
+                }
             }
             else{
 
-                PendingIntent mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-                registerReceiver(mUsbReceiver, filter);
-                usbManager.requestPermission(sPort.getDriver().getDevice(), mPermissionIntent);
+                if (!isAsked)
+                {
+                    isAsked = true;
+
+                    PendingIntent mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+                    registerReceiver(mUsbReceiver, filter);
+                    usbManager.requestPermission(sPort.getDriver().getDevice(), mPermissionIntent);
+                }
+
             }
         }
     }
@@ -85,36 +77,15 @@ public class UsbSerialActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopIoManager();
-        if (sPort != null) {
-            try {
-                sPort.close();
-            } catch (IOException e) {
-                // Ignore.
-            }
-            sPort = null;
-        }
-    }
 
-    private void stopIoManager() {
-        if (mSerialIoManager != null) {
-            Log.i(TAG, "Stopping io manager ..");
-            mSerialIoManager.stop();
-            mSerialIoManager = null;
-        }
-    }
-
-    private void startIoManager() {
-        if (sPort != null) {
-            Log.i(TAG, "Starting io manager ..");
-            mSerialIoManager = new SerialInputOutputManager(sPort, mListener);
-            mExecutor.submit(mSerialIoManager);
-        }
-    }
-
-    private void onDeviceStateChange() {
-        stopIoManager();
-        startIoManager();
+//        if (sPort != null) {
+//            try {
+//                sPort.close();
+//            } catch (IOException e) {
+//                // Ignore.
+//            }
+//            sPort = null;
+//        }
     }
 
     private void openConnection(UsbDeviceConnection connection)
@@ -122,6 +93,8 @@ public class UsbSerialActivity extends BaseActivity {
         try {
             sPort.open(connection);
             sPort.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+            sPort.setDTR(true);
+            sPort.setRTS(true);
 
         } catch (IOException e) {
             Log.e(TAG, "Error setting up device: " + e.getMessage(), e);
@@ -137,9 +110,15 @@ public class UsbSerialActivity extends BaseActivity {
 
     public void sendCommand(String str) {
 
-        if (mSerialIoManager != null) {
-            byte response[] = str.getBytes();
-            mSerialIoManager.writeAsync(response);
+        if (sPort != null) {
+
+            try {
+                byte response[] = str.getBytes();
+                sPort.write(response, 200);
+            } catch (IOException e) {
+
+                Log.e(TAG, "write error: " + e.getMessage());
+            }
         }
     }
 
@@ -149,29 +128,15 @@ public class UsbSerialActivity extends BaseActivity {
 
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
-//                synchronized (this) {
-//
-//                    final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-//                    UsbDeviceConnection connection = usbManager.openDevice(sPort.getDriver().getDevice());
-//                    openConnection(connection);
-//                    onDeviceStateChange();
-//
-//                }
                 synchronized (this) {
 
-                    UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        if(device != null){
-                            //call method to set up device communication
-                            final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-                            UsbDeviceConnection connection = usbManager.openDevice(device);
-                            openConnection(connection);
-                            onDeviceStateChange();
-                        }
+                    final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+                    if (connection == null)
+                    {
+                        connection = usbManager.openDevice(sPort.getDriver().getDevice());
+                        openConnection(connection);
                     }
-                    else {
-                        Log.d(TAG, "permission denied for device " + device);
-                    }
+
                 }
             }
 

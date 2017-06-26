@@ -4,13 +4,16 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.general.mediaplayer.kasa.R;
+import com.general.mediaplayer.kasa.model.MessageEvent;
 import com.general.mediaplayer.kasa.utility.AlertUtility;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.droidsonroids.gif.GifImageButton;
 
-public class DinningActivity extends UsbSerialActivity {
+public class DinningActivity extends BaseActivity {
 
     @BindView(R.id.power_imgbutton)
     GifImageButton powerBtn;
@@ -45,7 +48,6 @@ public class DinningActivity extends UsbSerialActivity {
     {
         stopFlash(powerBtn ,R.drawable.power_disable_icon);
 
-        sendCommand("LB110\n");
-
+        EventBus.getDefault().post(new MessageEvent("2"));
     }
 }
