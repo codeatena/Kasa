@@ -2,8 +2,11 @@ package com.general.mediaplayer.kasa.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar;
 import com.general.mediaplayer.kasa.R;
+import com.general.mediaplayer.kasa.model.Constants;
 import com.general.mediaplayer.kasa.model.MessageEvent;
 import com.general.mediaplayer.kasa.utility.AlertUtility;
 
@@ -18,6 +21,12 @@ public class BedroomActivity extends BaseActivity {
     @BindView(R.id.power_imgbutton)
     GifImageButton powerBtn;
 
+    @BindView(R.id.rangeSeekbar1)
+    CrystalSeekbar crystalSeekbar;
+
+    @BindView(R.id.color_imageView)
+    ImageView colorImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +34,21 @@ public class BedroomActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
+        crystalSeekbar.setEnabled(false);
+
+        if (getIntent().getBooleanExtra(Constants.INIT_STATUS ,false))
+        {
+            stopFlash(powerBtn ,R.drawable.power_enable_icon);
+        }
+
+        colorImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                stopFlash(powerBtn ,R.drawable.power_enable_icon);
+                EventBus.getDefault().post(new MessageEvent(Constants.BEDROOM_SERIAL));
+            }
+        });
     }
 
     public void onBack(View view)
@@ -58,7 +82,6 @@ public class BedroomActivity extends BaseActivity {
     public void onPower(View view)
     {
         stopFlash(powerBtn ,R.drawable.power_enable_icon);
-
-        EventBus.getDefault().post(new MessageEvent("1"));
+        EventBus.getDefault().post(new MessageEvent(Constants.BEDROOM_SERIAL));
     }
 }

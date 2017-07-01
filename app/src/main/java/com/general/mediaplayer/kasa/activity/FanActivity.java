@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.general.mediaplayer.kasa.R;
+import com.general.mediaplayer.kasa.model.Constants;
 import com.general.mediaplayer.kasa.model.MessageEvent;
 import com.general.mediaplayer.kasa.utility.AlertUtility;
 
@@ -25,6 +26,10 @@ public class FanActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
+        if (getIntent().getBooleanExtra(Constants.INIT_STATUS ,false))
+        {
+            stopFlash(powerBtn ,R.drawable.power_enable_icon);
+        }
     }
 
     public void onBack(View view)
@@ -34,7 +39,7 @@ public class FanActivity extends BaseActivity {
 
     public void onSchedule(View view)
     {
-        AlertUtility.showAlert(this , "Allows you to set schedules, timers and countdowns.");
+        AlertUtility.showAlert(this , "Allows you to set schedules.");
 
     }
 
@@ -46,14 +51,14 @@ public class FanActivity extends BaseActivity {
 
     public void onTimer(View view)
     {
-        AlertUtility.showAlert(this , "Allows you to track real-time energy usage.");
+        AlertUtility.showAlert(this , "Allows you to set timers and countdowns.");
 
     }
 
     public void onPower(View view)
     {
         stopFlash(powerBtn ,R.drawable.power_enable_icon);
-        EventBus.getDefault().post(new MessageEvent("3"));
+        EventBus.getDefault().post(new MessageEvent(Constants.FAN_SERIAL));
 
     }
 }

@@ -7,12 +7,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.general.mediaplayer.kasa.R;
+import com.general.mediaplayer.kasa.model.Constants;
 import com.general.mediaplayer.kasa.model.MessageEvent;
+import com.general.mediaplayer.kasa.utility.AlertUtility;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageButton;
 
 public class HomeActivity extends UsbSerialActivity {
@@ -34,6 +38,9 @@ public class HomeActivity extends UsbSerialActivity {
 
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
+
+    @BindView(R.id.add_button)
+    Button addBtn;
 
     SectionedRecyclerViewAdapter sectionAdapter;
 
@@ -45,6 +52,15 @@ public class HomeActivity extends UsbSerialActivity {
 
         ButterKnife.bind(this);
         setAdaptor();
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertUtility.showAlert(HomeActivity.this , "This is where you would go to add a new smart home device.");
+
+            }
+        });
 
         EventBus.getDefault().register(this);
 
@@ -180,14 +196,16 @@ public class HomeActivity extends UsbSerialActivity {
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 if (position == 0)
+                {
                     stopAnimation(v ,R.drawable.power_enable_icon);
-                else
-                    stopAnimation(v ,R.drawable.power_disable_icon);
+                    sendCommand(Constants.BEDROOM_SERIAL);
 
-                if (position == 0)
-                    sendCommand("1");
-                else
-                    sendCommand("2");
+                }
+                else{
+
+                    stopAnimation(v ,R.drawable.power_disable_icon);
+                    sendCommand(Constants.DINNINGROOM_SERIAL);
+                }
 
             }
 
@@ -197,11 +215,22 @@ public class HomeActivity extends UsbSerialActivity {
                 if (position == 0)
                 {
                     Intent intent = new Intent(HomeActivity.this ,BedroomActivity.class);
+                    GifImageButton button = ((HomeItemViewHolder)v).powerButton;
+                    if (!(button.getDrawable() instanceof GifDrawable))
+                    {
+                        intent.putExtra(Constants.INIT_STATUS ,true);
+                    }
+
                     startActivity(intent);
                 }
                 else
                 {
                     Intent intent = new Intent(HomeActivity.this ,DinningActivity.class);
+                    GifImageButton button = ((HomeItemViewHolder)v).powerButton;
+                    if (!(button.getDrawable() instanceof GifDrawable))
+                    {
+                        intent.putExtra(Constants.INIT_STATUS ,true);
+                    }
                     startActivity(intent);
                 }
             }
@@ -213,13 +242,18 @@ public class HomeActivity extends UsbSerialActivity {
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 stopAnimation(v ,R.drawable.power_enable_icon);
-                sendCommand("3");
+                sendCommand(Constants.FAN_SERIAL);
             }
 
             @Override
             public void itemViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 Intent intent = new Intent(HomeActivity.this ,FanActivity.class);
+                GifImageButton button = ((HomeItemViewHolder)v).powerButton;
+                if (!(button.getDrawable() instanceof GifDrawable))
+                {
+                    intent.putExtra(Constants.INIT_STATUS ,true);
+                }
                 startActivity(intent);
             }
         };
@@ -230,7 +264,7 @@ public class HomeActivity extends UsbSerialActivity {
             public void iconTextViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 stopAnimation(v ,R.drawable.power_enable_icon);
-                sendCommand("4");
+                sendCommand(Constants.PORCH_SERIAL);
 
             }
 
@@ -238,6 +272,11 @@ public class HomeActivity extends UsbSerialActivity {
             public void itemViewOnClick(RecyclerView.ViewHolder v, int position) {
 
                 Intent intent = new Intent(HomeActivity.this ,PorchActivity.class);
+                GifImageButton button = ((HomeItemViewHolder)v).powerButton;
+                if (!(button.getDrawable() instanceof GifDrawable))
+                {
+                    intent.putExtra(Constants.INIT_STATUS ,true);
+                }
                 startActivity(intent);
             }
         };
