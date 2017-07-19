@@ -27,10 +27,18 @@ public class UsbSerialActivity extends BaseActivity {
 
     private boolean isAsked = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        ProbeTable customTable = new ProbeTable();
+//        customTable.addProduct(0x2a03, 0x0043, CdcAcmSerialDriver.class);
+//        customTable.addProduct(0x2a03, 0x0043, Ch34xSerialDriver.class);
+//        customTable.addProduct(0x2a03, 0x0043, Cp21xxSerialDriver.class);
+//        customTable.addProduct(0x2a03, 0x0043, FtdiSerialDriver.class);
+//        customTable.addProduct(0x2a03, 0x0043, ProlificSerialDriver.class);
+//        UsbSerialProber prober = new UsbSerialProber(customTable);
+//        List<UsbSerialDriver> availableDrivers = prober.findAllDrivers(manager);
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
