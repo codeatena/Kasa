@@ -141,6 +141,15 @@
         fancy:layout_constraintRight_toRightOf="parent"
         fancy:srcCompat="@drawable/purple_back" />
 
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintRight_toRightOf="@+id/color_imageView"
+        app:layout_constraintTop_toTopOf="@+id/color_imageView"
+        fancy:srcCompat="@drawable/cursor" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"

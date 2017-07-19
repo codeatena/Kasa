@@ -15,6 +15,7 @@ public class LoopingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_looping);
+
     }
 
     public void onHome(View view)
@@ -22,5 +23,18 @@ public class LoopingActivity extends AppCompatActivity {
         Intent mainIntent = new Intent(this ,HomeActivity.class);
         startActivity(mainIntent);
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
     }
 }
