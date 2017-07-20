@@ -10,6 +10,8 @@ import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
+import com.hoho.android.usbserial.driver.ProbeTable;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
@@ -31,17 +33,14 @@ public class UsbSerialActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        ProbeTable customTable = new ProbeTable();
-//        customTable.addProduct(0x2a03, 0x0043, CdcAcmSerialDriver.class);
-//        customTable.addProduct(0x2a03, 0x0043, Ch34xSerialDriver.class);
-//        customTable.addProduct(0x2a03, 0x0043, Cp21xxSerialDriver.class);
-//        customTable.addProduct(0x2a03, 0x0043, FtdiSerialDriver.class);
-//        customTable.addProduct(0x2a03, 0x0043, ProlificSerialDriver.class);
-//        UsbSerialProber prober = new UsbSerialProber(customTable);
-//        List<UsbSerialDriver> availableDrivers = prober.findAllDrivers(manager);
-
+        ProbeTable customTable = new ProbeTable();
+        customTable.addProduct(0x2a03, 0x0043, CdcAcmSerialDriver.class);
+        UsbSerialProber prober = new UsbSerialProber(customTable);
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
+        List<UsbSerialDriver> availableDrivers = prober.findAllDrivers(manager);
+
+//        UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+//        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
         if (availableDrivers.isEmpty()) {
             return;
         }

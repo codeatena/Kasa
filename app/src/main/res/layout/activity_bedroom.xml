@@ -144,8 +144,8 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintRight_toRightOf="@+id/color_imageView"
         app:layout_constraintTop_toTopOf="@+id/color_imageView"
         fancy:srcCompat="@drawable/cursor" />

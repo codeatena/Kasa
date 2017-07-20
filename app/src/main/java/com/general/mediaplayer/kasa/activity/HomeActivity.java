@@ -2,6 +2,7 @@ package com.general.mediaplayer.kasa.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +32,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageButton;
 
-public class HomeActivity extends UsbSerialActivity {
+public class HomeActivity extends UsbSerialActivity implements View.OnClickListener{
 
 //    @BindView(R.id.bottomBar)
 //    BottomBar bottomBar;
@@ -41,6 +42,12 @@ public class HomeActivity extends UsbSerialActivity {
 
     @BindView(R.id.add_button)
     Button addBtn;
+
+    @BindView(R.id.leftbottom_button)
+    Button leftbottomBtn;
+
+    @BindView(R.id.rightbottom_button)
+    Button rightbottomBtn;
 
     SectionedRecyclerViewAdapter sectionAdapter;
 
@@ -64,6 +71,9 @@ public class HomeActivity extends UsbSerialActivity {
 
         EventBus.getDefault().register(this);
 
+        leftbottomBtn.setOnClickListener(this);
+        rightbottomBtn.setOnClickListener(this);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -72,6 +82,25 @@ public class HomeActivity extends UsbSerialActivity {
         /* Do something */
         Log.d("command" ,event.command);
         sendCommand(event.command);
+    }
+
+    private long mLastClickTIme = 0;
+
+    @Override
+    public void onClick(View v) {
+
+        if (SystemClock.elapsedRealtime() - mLastClickTIme < 500)
+        {
+            // show CSR app
+            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.general.mediaplayer.csr");
+            if (launchIntent != null) {
+                startActivity(launchIntent);//null pointer check in case package name was not found
+            }
+
+            return;
+        }
+
+        mLastClickTIme = SystemClock.elapsedRealtime();
     }
 
     private class HomeSection extends StatelessSection {
