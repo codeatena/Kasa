@@ -5,12 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
 import com.hoho.android.usbserial.driver.ProbeTable;
@@ -19,8 +17,6 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class UsbSerialActivity extends BaseActivity {
@@ -30,6 +26,8 @@ public class UsbSerialActivity extends BaseActivity {
 
     UsbSerialPort sPort;
     UsbDeviceConnection connection;
+    PendingIntent mPermissionIntent;
+
     private boolean isAsked = false;
 
     public final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
@@ -46,10 +44,8 @@ public class UsbSerialActivity extends BaseActivity {
                         connection = usbManager.openDevice(sPort.getDriver().getDevice());
                         openConnection(connection);
                     }
-
                 }
             }
-
         }
     };
 
@@ -57,10 +53,9 @@ public class UsbSerialActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-//        filter.addAction(ACTION_USB_PERMISSION);
-//        this.registerReceiver(mUsbReceiver, filter);
+        mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+        registerReceiver(mUsbReceiver, filter);
 
         ProbeTable customTable = new ProbeTable();
         customTable.addProduct(0x2a03, 0x0043, CdcAcmSerialDriver.class);
@@ -81,8 +76,6 @@ public class UsbSerialActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        refreshDevices();
-
         if (sPort != null) {
 
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -99,13 +92,8 @@ public class UsbSerialActivity extends BaseActivity {
                 if (!isAsked &&  connection == null)
                 {
                     isAsked = true;
-
-                    PendingIntent mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                    IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-                    registerReceiver(mUsbReceiver, filter);
                     usbManager.requestPermission(sPort.getDriver().getDevice(), mPermissionIntent);
                 }
-
             }
         }
     }
@@ -155,30 +143,6 @@ public class UsbSerialActivity extends BaseActivity {
                 Log.e(TAG, "write error: " + e.getMessage());
             }
         }
-    }
-
-    private void refreshDevices()
-    {
-        UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        // Get the list of attached devices
-        HashMap<String, UsbDevice> devices = manager.getDeviceList();
-
-        String str = "";
-        str =  "Number of devices: " + devices.size() + "\n";
-
-        // Iterate over all devices
-        Iterator<String> it = devices.keySet().iterator();
-        while (it.hasNext())
-        {
-            String deviceName = it.next();
-            UsbDevice device = devices.get(deviceName);
-
-            String VID = Integer.toHexString(device.getVendorId()).toUpperCase();
-            String PID = Integer.toHexString(device.getProductId()).toUpperCase();
-            str += deviceName + " " +  VID + ":" + PID + " " + manager.hasPermission(device) + "\n";
-        }
-
-        Toast.makeText(this ,str ,Toast.LENGTH_LONG).show();
     }
 
 }

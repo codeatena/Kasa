@@ -4,6 +4,9 @@
 
     <uses-feature android:name="android.hardware.usb.host" />
     <uses-permission android:name="android.permission.USB_PERMISSION" />
+    <uses-permission android:name="android.permission.MANAGE_USB" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 
     <application
         android:allowBackup="true"
@@ -45,13 +48,19 @@
         </activity>
 
         <activity android:name=".activity.UsbSerialActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />-->
-            <!--</intent-filter>-->
-            <!--<meta-data-->
-                <!--android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"-->
-                <!--android:resource="@xml/device_filter" />-->
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
         </activity>
+
+        <receiver android:name=".activity.LaunchReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".activity.LoopingActivity"

@@ -35,8 +35,8 @@
 
     <pl.droidsonroids.gif.GifImageButton xmlns:tib="http://schemas.android.com/apk/res-auto"
         android:id="@+id/power_imgbutton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
