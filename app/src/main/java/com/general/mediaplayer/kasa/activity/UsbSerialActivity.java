@@ -26,19 +26,44 @@ public class UsbSerialActivity extends BaseActivity {
 
     UsbSerialPort sPort;
     UsbDeviceConnection connection;
-
     private boolean isAsked = false;
+
+    public final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
+
+                    final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+                    if (connection == null)
+                    {
+                        connection = usbManager.openDevice(sPort.getDriver().getDevice());
+                        openConnection(connection);
+                    }
+
+                }
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //IntentFilter filter = new IntentFilter();
+        //filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        //filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        //filter.addAction(ACTION_USB_PERMISSION);
+        //this.registerReceiver(mUsbReceiver, filter);
 
         ProbeTable customTable = new ProbeTable();
         customTable.addProduct(0x2a03, 0x0043, CdcAcmSerialDriver.class);
         UsbSerialProber prober = new UsbSerialProber(customTable);
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = prober.findAllDrivers(manager);
-
 //        UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
 //        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
         if (availableDrivers.isEmpty()) {
@@ -48,6 +73,7 @@ public class UsbSerialActivity extends BaseActivity {
         // Open a connection to the first available driver.
         UsbSerialDriver driver = availableDrivers.get(0);
         sPort = driver.getPorts().get(0);
+
     }
 
     @Override
@@ -67,7 +93,7 @@ public class UsbSerialActivity extends BaseActivity {
             }
             else{
 
-                if (!isAsked)
+                if (!isAsked &&  connection == null)
                 {
                     isAsked = true;
 
@@ -111,7 +137,6 @@ public class UsbSerialActivity extends BaseActivity {
                 // Ignore.
             }
             sPort = null;
-            return;
         }
     }
 
@@ -128,26 +153,5 @@ public class UsbSerialActivity extends BaseActivity {
             }
         }
     }
-
-    public final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                synchronized (this) {
-
-                    final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-                    if (connection == null)
-                    {
-                        connection = usbManager.openDevice(sPort.getDriver().getDevice());
-                        openConnection(connection);
-                    }
-
-                }
-            }
-
-        }
-    };
 
 }
