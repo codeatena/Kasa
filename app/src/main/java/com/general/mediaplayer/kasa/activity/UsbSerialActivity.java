@@ -53,19 +53,16 @@ public class UsbSerialActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //IntentFilter filter = new IntentFilter();
-        //filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        //filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        //filter.addAction(ACTION_USB_PERMISSION);
-        //this.registerReceiver(mUsbReceiver, filter);
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+//        filter.addAction(ACTION_USB_PERMISSION);
+//        this.registerReceiver(mUsbReceiver, filter);
 
         ProbeTable customTable = new ProbeTable();
         customTable.addProduct(0x2a03, 0x0043, CdcAcmSerialDriver.class);
         UsbSerialProber prober = new UsbSerialProber(customTable);
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = prober.findAllDrivers(manager);
-//        UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-//        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
         if (availableDrivers.isEmpty()) {
             return;
         }
